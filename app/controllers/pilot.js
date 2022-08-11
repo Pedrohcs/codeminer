@@ -1,6 +1,7 @@
 const pilotRepository = require('../repositories/pilot')
 const locationRepository = require('../repositories/location')
 const contractRepository = require('../repositories/contract')
+const transactionRepository = require('../repositories/transaction')
 const utils = require('../utils/utils')
 
 const INITIAL_CREDITS = 0
@@ -45,6 +46,12 @@ module.exports.creditContract = async function(pilotId, contractId) {
         let currentCredits = pilot.credits + contract.value
 
         await pilotRepository.updateById(pilot._id, { 'credits': currentCredits })
+        await transactionRepository.create({
+            'description': contract.description || '',
+            'value': contract.value,
+            'type': 'd',
+            'contract': contract._id
+        })
     } catch(error) {
         console.error(`[creditContract] Error giving credits to pilot ${pilotId}. ${error.message}`)
         throw error
