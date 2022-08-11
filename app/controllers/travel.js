@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const refillFuelController = require('../controllers/refillFuel')
 const shipController = require('../controllers/ship')
+const pilotController = require('../controllers/pilot')
 const travelRepository = require('../repositories/travel')
 const pilotRepository = require('../repositories/pilot')
 const shipRepository = require('../repositories/ship')
@@ -11,12 +11,16 @@ const contractRepository = require('../repositories/contract')
 module.exports.registerTravel = async function(newTravel) {
     try {
         validateTravel(newTravel)
-        let  { travel, pilot, destinationPlanet, travelEndsContract } = await formatTravel(newTravel)
+        let  { travel, pilot, destinationPlanet, contract, travelEndsContract } = await formatTravel(newTravel)
 
         await travelRepository.create(travel)
 
         await pilotRepository.updateById(pilot._id, { 'location': destinationPlanet._id })
         await shipController.registerFuelConsumption(travel.ship, travel.route)
+        if (travelEndsContract) {
+            await contractRepository.updateById(contract._id, { 'finished': true })
+            await pilotController.creditContract(pilot._id, contract._id)
+        }
     } catch(error) {
         console.error(`[registerTravel] Error recording pilot: ${newTravel.pilot}, ship: ${newTravel.ship}, contract: ${newTravel.contract} Travel . ${error.message}`)
         throw error
@@ -57,7 +61,7 @@ async function formatTravel(newTravel) {
     if (!travelRoute)
         throw { code: 404, message: 'The route selected for the trip is currently not available. Please choose another destination planet in relation to your current planet'}
 
-    if (!refillFuelController.checkFuel(ship, travelRoute))
+    if (!shipController.checkFuel(ship, travelRoute))
         throw { code: 406, message: `Your ship doesn\'t have enough fuel for this journey. It only has ${ship.fuelLevel} of fuel. Refuel or change route`}
 
     let contract = await contractRepository.getById(mongoose.Types.ObjectId(newTravel.contract))
@@ -73,6 +77,7 @@ async function formatTravel(newTravel) {
         },
         pilot: pilot,
         destinationPlanet: destinationPlanet,
-        travelEndsContract: true
+        contract: contract,
+        travelEndsContract: contract.destinationPlanet.toString() === destinationPlanet._id.toString()
     }
 }

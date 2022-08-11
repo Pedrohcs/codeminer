@@ -30,6 +30,10 @@ function validateShip(newShip) {
         throw { code: 400, message: 'It is mandatory to inform the cargo capacity of the ship'}
 }
 
+module.exports.checkFuel = function(ship, travelRoute) {
+    return ship.fuelLevel >= travelRoute.fuelUnits
+}
+
 module.exports.registerFuelConsumption = async function(shipId, travelRouteId) {
     try {
         let ship = await shipRepository.getById(shipId)

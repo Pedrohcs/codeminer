@@ -13,9 +13,17 @@ module.exports.create = async function(pilot) {
     }
 }
 
+module.exports.getById = async function(id) {
+    try {
+        return await Pilot.findOne({ '_id': id })
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports.getByCertification = async function(certification) {
     try {
-        return await Pilot.findOne({'certification': certification})
+        return await Pilot.findOne({ 'certification': certification })
     } catch (error) {
         throw error
     }

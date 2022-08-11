@@ -1,5 +1,6 @@
 const pilotRepository = require('../repositories/pilot')
 const locationRepository = require('../repositories/location')
+const contractRepository = require('../repositories/contract')
 const utils = require('../utils/utils')
 
 const INITIAL_CREDITS = 0
@@ -34,4 +35,18 @@ function validatePilot(newPilot) {
         throw { code: 406, message: 'Riders must be over 18 years old' }
     if (!newPilot.location)
         throw { code: 400, message: 'It is mandatory to inform the current location of the pilot'}
+}
+
+module.exports.creditContract = async function(pilotId, contractId) {
+    try {
+        let pilot = await pilotRepository.getById(pilotId)
+        let contract = await contractRepository.getById(contractId)
+
+        let currentCredits = pilot.credits + contract.value
+
+        await pilotRepository.updateById(pilot._id, { 'credits': currentCredits })
+    } catch(error) {
+        console.error(`[creditContract] Error giving credits to pilot ${pilotId}. ${error.message}`)
+        throw error
+    }
 }
