@@ -11,11 +11,12 @@ const contractRepository = require('../repositories/contract')
 module.exports.registerTravel = async function(newTravel) {
     try {
         validateTravel(newTravel)
-        newTravel = await formatTravel(newTravel)
+        let  { travel, pilot, destinationPlanet, travelEndsContract } = await formatTravel(newTravel)
 
-        await travelRepository.create(newTravel)
+        await travelRepository.create(travel)
 
-        await shipController.registerFuelConsumption(newTravel.ship, newTravel.route)
+        await pilotRepository.updateById(pilot._id, { 'location': destinationPlanet._id })
+        await shipController.registerFuelConsumption(travel.ship, travel.route)
     } catch(error) {
         console.error(`[registerTravel] Error recording pilot: ${newTravel.pilot}, ship: ${newTravel.ship}, contract: ${newTravel.contract} Travel . ${error.message}`)
         throw error
@@ -64,9 +65,14 @@ async function formatTravel(newTravel) {
         throw { code: 404, message: 'Contract X not found'}
 
     return {
-        "route": travelRoute._id,
-        "pilot": pilot._id,
-        "ship": ship._id,
-        "contract": contract._id
+        travel: {
+            "route": travelRoute._id,
+            "pilot": pilot._id,
+            "ship": ship._id,
+            "contract": contract._id
+        },
+        pilot: pilot,
+        destinationPlanet: destinationPlanet,
+        travelEndsContract: true
     }
 }
