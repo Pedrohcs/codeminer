@@ -7,6 +7,8 @@ router.post('/', create)
 
 router.get('/open', openContracts)
 
+router.post('/accept', acceptContract)
+
 module.exports = router
 
 async function create(req, res) {
@@ -22,6 +24,15 @@ async function openContracts(req, res) {
     try {
         let contracts = await contractController.listOpenContracts()
         res.status(200).send({ "contracts": contracts })
+    } catch (error) {
+        res.status(error.code || 500).send(error.message)
+    }
+}
+
+async function acceptContract(req, res) {
+    try {
+        await contractController.acceptContract(req.body.contract, req.body.pilot)
+        res.status(200).send({ "message": "Agreement accepted!" })
     } catch (error) {
         res.status(error.code || 500).send(error.message)
     }
