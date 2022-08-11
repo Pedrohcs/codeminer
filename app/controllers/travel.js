@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const refillFuelController = require('../controllers/refillFuel')
+const shipController = require('../controllers/ship')
 const travelRepository = require('../repositories/travel')
 const pilotRepository = require('../repositories/pilot')
 const shipRepository = require('../repositories/ship')
@@ -13,6 +14,8 @@ module.exports.registerTravel = async function(newTravel) {
         newTravel = await formatTravel(newTravel)
 
         await travelRepository.create(newTravel)
+
+        await shipController.registerFuelConsumption(newTravel.ship, newTravel.route)
     } catch(error) {
         console.error(`[registerTravel] Error recording pilot: ${newTravel.pilot}, ship: ${newTravel.ship}, contract: ${newTravel.contract} Travel . ${error.message}`)
         throw error

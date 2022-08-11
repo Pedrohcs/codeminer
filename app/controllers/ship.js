@@ -1,5 +1,6 @@
 const shipRepository = require('../repositories/ship')
 const pilotRepository = require('../repositories/pilot')
+const travelRoutesRepository = require("../repositories/travelRoutes");
 
 module.exports.createShip = async function(newShip) {
     try {
@@ -27,4 +28,18 @@ function validateShip(newShip) {
         throw { code: 400, message: 'It is mandatory to inform the ship\'s current fuel level'}
     if (!newShip.weightCapacity)
         throw { code: 400, message: 'It is mandatory to inform the cargo capacity of the ship'}
+}
+
+module.exports.registerFuelConsumption = async function(shipId, travelRouteId) {
+    try {
+        let ship = await shipRepository.getById(shipId)
+        let travelRoute = await travelRoutesRepository.getById(travelRouteId)
+
+        let currentFuel = ship.fuelLevel - travelRoute.fuelUnits
+
+        await shipRepository.updateById(ship._id, { 'fuelLevel': currentFuel })
+    } catch(error) {
+        console.error(`[registerFuelConsumption] Error recording fuel consumption for the ship ${shipId}. ${error.message}`)
+        throw error
+    }
 }

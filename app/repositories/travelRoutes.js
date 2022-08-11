@@ -8,6 +8,14 @@ module.exports.create = async function(ship) {
     }
 }
 
+module.exports.getById = async function(id) {
+    try {
+        return await TravelRoutes.findOne({ '_id': id })
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports.getByRoute = async function(originPlanet, destinationPlanet) {
     try {
         return await TravelRoutes.findOne({ 'originPlanet': originPlanet, 'destinationPlanet': destinationPlanet })

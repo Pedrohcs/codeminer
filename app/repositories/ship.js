@@ -13,6 +13,14 @@ module.exports.create = async function(ship) {
     }
 }
 
+module.exports.getById = async function(id) {
+    try {
+        return await Ship.findOne({ '_id': id })
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports.getByIdentifierCode = async function(identifierCode) {
     try {
         return await Ship.findOne({ 'identifierCode': identifierCode })
