@@ -18,3 +18,11 @@ module.exports.getById = async function(id) {
         throw error
     }
 }
+
+module.exports.getAllInContract = async function(ids) {
+    try {
+        return await Resource.find({ '_id': { $in: ids } })
+    } catch (error) {
+        throw error
+    }
+}

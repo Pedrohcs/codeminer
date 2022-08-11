@@ -1,5 +1,6 @@
 const contractRepository = require('../repositories/contract')
 const locationRepository = require('../repositories/location')
+const resourceRepository = require('../repositories/resource')
 const resourceController = require('./resource')
 
 module.exports.createContract = async function(newContract) {
@@ -41,11 +42,41 @@ function validateContract(newContract) {
         throw { code: 400, message: 'It is mandatory to inform the contract\'s value'}
 }
 
-module.exports.listOpenContracts = function() {
+module.exports.listOpenContracts = async function() {
     try {
+        let contracts = await contractRepository.getOpenContracts()
 
+        return formatContracts(contracts)
     } catch(error) {
         console.error(`[listOpenContracts] Error listing open contracts. ${error.message}`)
         throw error
     }
+}
+
+async function formatContracts(contracts) {
+    let contractsFormats = []
+
+    for (let contract of contracts) {
+        let originPlanet = await locationRepository.getById(contract.originPlanet)
+        let destinationPlanet = await locationRepository.getById(contract.destinationPlanet)
+        let resources = await resourceRepository.getAllInContract(contract.payload)
+
+        resources = resources.map(resource => {
+            return {
+                'name': resource.name,
+                'weight': `${resource.weight.toString()} tons`
+            }
+        })
+
+        contractsFormats.push({
+            'id': contract._id,
+            'description': contract.description || '',
+            'originPlanet': originPlanet.name,
+            'destinationPlanet': destinationPlanet.name,
+            'resource': resources,
+            'value': contract.value
+        })
+    }
+
+    return contractsFormats
 }
