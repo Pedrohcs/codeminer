@@ -8,6 +8,14 @@ module.exports.create = async function(location) {
     }
 }
 
+module.exports.getAll = async function() {
+    try {
+        return await Location.find({ })
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports.getById = async function(id) {
     try {
         return await Location.findOne({ '_id': id })

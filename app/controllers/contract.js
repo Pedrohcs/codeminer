@@ -3,7 +3,7 @@ const locationRepository = require('../repositories/location')
 const resourceRepository = require('../repositories/resource')
 const pilotRepository = require('../repositories/pilot')
 const resourceController = require('./resource')
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 module.exports.createContract = async function(newContract) {
     try {
@@ -93,7 +93,7 @@ module.exports.acceptContract = async function(contractId, pilotCertification) {
         if (!pilot)
             throw { code: 404, message: `Pilot with certification ${pilotCertification} not found in the system` }
 
-        await contractRepository.updateById(contract._id, { 'owner': pilot._id })
+        await contractRepository.updateById(contract._id, { 'pilot': pilot._id })
     } catch(error) {
         console.error(`[acceptContract] Error accepting the contract ${contractId}. ${error.message}`)
         throw error

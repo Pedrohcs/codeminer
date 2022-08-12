@@ -7,7 +7,7 @@ const schema = new Schema({
     originPlanet: { type: mongoose.Schema.Types.ObjectId, required: true },
     destinationPlanet: { type: mongoose.Schema.Types.ObjectId, required: true },
     value: { type: Number, required: true },
-    owner: { type: mongoose.Schema.Types.ObjectId },
+    pilot: { type: mongoose.Schema.Types.ObjectId },
     finished: { type: Boolean, default: false }
 })
 

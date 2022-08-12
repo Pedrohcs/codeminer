@@ -13,6 +13,14 @@ module.exports.create = async function(pilot) {
     }
 }
 
+module.exports.getAll = async function() {
+    try {
+        return await Pilot.find({ })
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports.getById = async function(id) {
     try {
         return await Pilot.findOne({ '_id': id })

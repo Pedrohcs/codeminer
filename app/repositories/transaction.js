@@ -7,3 +7,11 @@ module.exports.create = async function(transaction) {
         throw error
     }
 }
+
+module.exports.getAll = async function() {
+    try {
+        return await Transaction.find({ }).sort({ 'created': 1 })
+    } catch (error) {
+        throw error
+    }
+}
