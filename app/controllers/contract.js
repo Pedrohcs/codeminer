@@ -77,7 +77,7 @@ async function formatContracts(contracts) {
             'description': contract.description || '',
             'originPlanet': originPlanet.name,
             'destinationPlanet': destinationPlanet.name,
-            'resource': resources,
+            'payload': resources,
             'value': contract.value
         })
     }

@@ -1,0 +1,657 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2.30.0",
+    "title": "DigiGrotesk API",
+    "description": "Utilize esta documentação para aulixio ao uso da API do sistema!"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {},
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/pilots": {
+      "post": {
+        "summary": "Create pilot",
+        "tags": ["Pilot"],
+        "description": "Register a pilot in the system so he can execute contracts",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "certification",
+            "required": true,
+            "description": "Pilot certification",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "name",
+            "required": true,
+            "description": "Pilot name",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "age",
+            "required": true,
+            "description": "Pilot age",
+            "type": "integer"
+          },{
+            "in": "formData",
+            "name": "location",
+            "required": true,
+            "description": "Pilot location",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Registered pilot!"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "It is mandatory to inform the pilot's document of permission to pilot a ship"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/ships": {
+      "post": {
+        "summary": "Create ship",
+        "tags": ["Ship"],
+        "description": "Register the pilot's ship in the system",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "identifierCode",
+            "required": true,
+            "description": "Ship identifier code",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "pilot",
+            "required": true,
+            "description": "Pilot certification",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "fuelCapacity",
+            "required": true,
+            "description": "Total fuel capacity",
+            "type": "integer"
+          },{
+            "in": "formData",
+            "name": "fuelLevel",
+            "required": true,
+            "description": "Current fuel",
+            "type": "integer"
+          },{
+            "in": "formData",
+            "name": "weightCapacity",
+            "required": true,
+            "description": "Total load capacity",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Registered ship!"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "It is mandatory to inform the ship's identification code"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/ships/refill/fuel": {
+      "post": {
+        "summary": "Refuel the ship",
+        "tags": ["Ship"],
+        "description": "Refuel the ship",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "pilot",
+            "required": true,
+            "description": "Pilot certification",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "ship",
+            "required": true,
+            "description": "Ship identifier code",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "units",
+            "required": true,
+            "description": "Quantity of fuel units",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Registered fuel refill!"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Certification PILOT_CERTIFICATION does not correspond to any pilot registered in the system"
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Requested quantity exceeds the ship's fuel limit!"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/contracts": {
+      "post": {
+        "summary": "Create contract",
+        "tags": ["Contract"],
+        "description": "Create a contract to be executed by a pilot",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "originPlanet",
+            "required": true,
+            "description": "Contract origin planet",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "destinationPlanet",
+            "required": true,
+            "description": "Contract destination planet",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "value",
+            "required": true,
+            "description": "Number of payment units",
+            "type": "integer"
+          },{
+            "in": "formData",
+            "name": "payload",
+            "required": true,
+            "description": "Resources to be transported",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/payload"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Registered contract!"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "It is mandatory to inform the planet of origin of the contract"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Planet of origin (location) PLANET_NAME not found in the system"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/contracts/open": {
+      "get": {
+        "summary": "Create contract",
+        "tags": ["Contract"],
+        "description": "Create a contract to be executed by a pilot",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/contracts"
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal error"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/contracts/accept": {
+      "post": {
+        "summary": "Accept contract",
+        "tags": ["Contract"],
+        "description": "The pilot accepts the contract by selecting the ship that will carry out the voyages",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "contract",
+            "required": true,
+            "description": "Contract id",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "pilot",
+            "required": true,
+            "description": "Pilot certification",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "ship",
+            "required": true,
+            "description": "Ship identifier code",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Agreement accepted"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Contrat CONTRACT_ID not found in the system"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/travels": {
+      "post": {
+        "summary": "Register the trip",
+        "tags": ["Travel"],
+        "description": "Record a trip that the pilot takes to perform the contract",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "pilot",
+            "required": true,
+            "description": "Pilot certification",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "ship",
+            "required": true,
+            "description": "Ship identifier code",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "contract",
+            "required": true,
+            "description": "Contract Id",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "originPlanet",
+            "required": true,
+            "description": "Contract origin planet",
+            "type": "string"
+          },{
+            "in": "formData",
+            "name": "destinationPlanet",
+            "required": true,
+            "description": "Contract destination planet",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Registered travel!"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Certification PILOT_CERTIFICATION does not correspond to any pilot registered in the system"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "It is mandatory to inform the pilot travel"
+                }
+              }
+            },
+            "description": ""
+          },
+          "406": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Your ship doesn't have enough fuel for this journey. It only has FUEL_LEVEL of fuel. Refuel or change route"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reports/total/weight": {
+      "get": {
+        "summary": "Total weight report",
+        "tags": ["Report"],
+        "description": "Report that shows how many tons of each resource were transported in contracts",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Andvari": {
+                  "type": "object",
+                  "properties": {
+                    "sent": {
+                      "type": "object",
+                      "properties": {
+                        "food": {
+                          "type": "number",
+                          "description": "Resource: food"
+                        },
+                        "minerals": {
+                          "type": "number",
+                          "description": "Resource: minerals"
+                        },
+                        "water": {
+                          "type": "number",
+                          "description": "Resource: water"
+                        }
+                      }
+                    },
+                    "received": {
+                      "type": "object",
+                      "properties": {
+                        "food": {
+                          "type": "number",
+                          "description": "Resource: food"
+                        },
+                        "minerals": {
+                          "type": "number",
+                          "description": "Resource: minerals"
+                        },
+                        "water": {
+                          "type": "number",
+                          "description": "Resource: water"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal error"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reports/pilot/percentage/": {
+      "get": {
+        "summary": "Resource percentage",
+        "tags": ["Report"],
+        "description": "Report that returns the percentage of each resource against all contracts completed by the pilot",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Pilot1": {
+                  "type": "object",
+                  "properties": {
+                    "food": {
+                      "type": "number",
+                      "description": "Resource percentage: food"
+                    },
+                    "minerals": {
+                      "type": "number",
+                      "description": "Resource percentage: minerals"
+                    },
+                    "water": {
+                      "type": "number",
+                      "description": "Resource percentage: water"
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal error"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reports/total/transactions": {
+      "get": {
+        "summary": "Intergalactic Federation transactions",
+        "tags": ["Report"],
+        "description": "Report that returns all Intergalactic Federation Transactions",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "schema": {
+              "type": "array",
+              "items": [
+                "Contract 2 Description paid: -₭936"
+              ]
+            },
+            "description": ""
+          },
+          "500": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal error"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "payload": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/resource"
+      }
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Resource name"
+        },
+        "weight":{
+          "type": "number",
+          "description": "Resource weight in tons"
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Contract Id"
+        },
+        "description": {
+          "type": "string",
+          "description": "Contract description"
+        },
+        "originPlanet": {
+          "type": "string",
+          "description": "Contract origin planet"
+        },
+        "destinationPlanet": {
+          "type": "string",
+          "description": "Contract destination planet"
+        },
+        "value": {
+          "type": "integer",
+          "description": "Contract payment amount"
+        },
+        "payload": {
+          "$ref": "#/definitions/resource"
+        }
+      }
+    }
+  }
+}
