@@ -20,7 +20,7 @@ async function create(req, res) {
 
 async function refillFuel(req, res) {
     try {
-        await shipController.refillFuel(req.body.pilot, req.body.ship, req.body.credits)
+        await shipController.refillFuel(req.body.pilot, req.body.ship, req.body.units)
         res.status(200).send({ "message": "Registered fuel refill!" })
     } catch (error) {
         res.status(error.code || 500).send(error.message)

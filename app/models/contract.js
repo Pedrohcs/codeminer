@@ -8,6 +8,7 @@ const schema = new Schema({
     destinationPlanet: { type: mongoose.Schema.Types.ObjectId, required: true },
     value: { type: Number, required: true },
     pilot: { type: mongoose.Schema.Types.ObjectId },
+    ship: { type: mongoose.Schema.Types.ObjectId },
     finished: { type: Boolean, default: false }
 })
 

@@ -3,6 +3,7 @@ const pilotRepository = require('../repositories/pilot')
 const travelRoutesRepository = require('../repositories/travelRoutes')
 const transactionRepository = require('../repositories/transaction')
 const refillFuelRepository = require('../repositories/refillFuel')
+const resourceRepository = require('../repositories/resource')
 
 const FUEL_UNIT_COST = 7
 
@@ -92,6 +93,22 @@ module.exports.refillFuel = async function(pilotCertification, shipIdentifierCod
         })
     } catch(error) {
         console.error(`[refillFuel] Error fueling ship ${shipIdentifierCode} for pilot ${pilotCertification}. ${error.message}`)
+        throw error
+    }
+}
+
+module.exports.checkSupportedWeight = async function(ship, resourcesId) {
+    try {
+        let totalWeight = 0
+        let resources = await resourceRepository.getAllInContract(resourcesId)
+
+        resources.forEach(resource => {
+            totalWeight += parseFloat(resource.weight)
+        })
+
+        return totalWeight > ship.weightCapacity
+    } catch(error) {
+        console.error(`[checkSupportedWeight] Error calculating weight supported by ship ${ship.identifierCode}. ${error.message}`)
         throw error
     }
 }

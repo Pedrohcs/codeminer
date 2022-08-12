@@ -1,7 +1,9 @@
+const shipController = require('../controllers/ship')
 const contractRepository = require('../repositories/contract')
 const locationRepository = require('../repositories/location')
 const resourceRepository = require('../repositories/resource')
 const pilotRepository = require('../repositories/pilot')
+const shipRepository = require("../repositories/ship")
 const resourceController = require('./resource')
 const mongoose = require("mongoose")
 
@@ -83,7 +85,7 @@ async function formatContracts(contracts) {
     return contractsFormats
 }
 
-module.exports.acceptContract = async function(contractId, pilotCertification) {
+module.exports.acceptContract = async function(contractId, pilotCertification, shipIdentifierCode) {
     try {
         let contract = await contractRepository.getById(mongoose.Types.ObjectId(contractId))
         if (!contract)
@@ -92,6 +94,13 @@ module.exports.acceptContract = async function(contractId, pilotCertification) {
         let pilot = await pilotRepository.getByCertification(pilotCertification)
         if (!pilot)
             throw { code: 404, message: `Pilot with certification ${pilotCertification} not found in the system` }
+
+        let ship = await shipRepository.getByIdentifierCode(shipIdentifierCode)
+        if (!ship)
+            throw { code: 404, message: `Ship ${shipIdentifierCode} was not found in the system`}
+
+        if (await shipController.checkSupportedWeight(ship, contract.payload))
+            throw { code: 406, message: `The total weight of the contract cargo is greater than the total weight supported by your ship ${shipIdentifierCode}`}
 
         await contractRepository.updateById(contract._id, { 'pilot': pilot._id })
     } catch(error) {

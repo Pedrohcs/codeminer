@@ -31,7 +31,7 @@ async function openContracts(req, res) {
 
 async function acceptContract(req, res) {
     try {
-        await contractController.acceptContract(req.body.contract, req.body.pilot)
+        await contractController.acceptContract(req.body.contract, req.body.pilot, req.body.ship)
         res.status(200).send({ "message": "Agreement accepted!" })
     } catch (error) {
         res.status(error.code || 500).send(error.message)
