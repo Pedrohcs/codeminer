@@ -2,7 +2,7 @@ const pilotRepository = require('../repositories/pilot')
 const locationRepository = require('../repositories/location')
 const contractRepository = require('../repositories/contract')
 const transactionRepository = require('../repositories/transaction')
-const utils = require('../utils/utils')
+const utils = require('./utils/utils')
 
 const INITIAL_CREDITS = 0
 
@@ -37,6 +37,7 @@ function validatePilot(newPilot) {
     if (!newPilot.location)
         throw { code: 400, message: 'It is mandatory to inform the current location of the pilot'}
 }
+module.exports.validatePilot = validatePilot
 
 module.exports.creditContract = async function(pilotId, contractId) {
     try {

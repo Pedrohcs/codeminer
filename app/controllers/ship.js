@@ -31,12 +31,15 @@ function validateShip(newShip) {
         throw { code: 400, message: 'It is mandatory to inform the ship\'s fuel capacity'}
     if (!newShip.fuelLevel)
         throw { code: 400, message: 'It is mandatory to inform the ship\'s current fuel level'}
+    if (newShip.fuelLevel > newShip.fuelCapacity)
+        throw { code: 400, message: 'Current fuel is higher than the ship\'s fuel limit'}
     if (!newShip.weightCapacity)
         throw { code: 400, message: 'It is mandatory to inform the cargo capacity of the ship'}
 }
+module.exports.validateShip = validateShip
 
 module.exports.checkFuel = function(ship, travelRoute) {
-    return ship.fuelLevel >= travelRoute.fuelUnits
+    return ship.fuelLevel > travelRoute.fuelUnits
 }
 
 module.exports.registerFuelConsumption = async function(shipId, travelRouteId) {
@@ -63,16 +66,7 @@ module.exports.refillFuel = async function(pilotCertification, shipIdentifierCod
         if (!ship)
             throw { code: 404, message: `Ship ${shipIdentifierCode} was not found in the system`}
 
-        let credits = units * FUEL_UNIT_COST
-        let fuel = ship.fuelLevel + units
-
-        if (fuel > ship.fuelCapacity)
-            throw { code: 406, message: 'Requested quantity exceeds the ship\'s fuel limit!' }
-
-        if (credits > pilot.credits)
-            throw { code: 406, message: 'You do not have the requested amount of credits for refilling fuel' }
-
-        let debitCredits = pilot.credits - credits
+        let debitCredits = getDebitCredits(ship, units, pilot.credits)
 
         await shipRepository.updateById(ship._id, { 'fuelLevel': fuel })
 
@@ -96,6 +90,20 @@ module.exports.refillFuel = async function(pilotCertification, shipIdentifierCod
         throw error
     }
 }
+
+function getDebitCredits(ship, units, pilotCredits) {
+    let credits = units * FUEL_UNIT_COST
+    let fuel = ship.fuelLevel + units
+
+    if (fuel > ship.fuelCapacity)
+        throw { code: 406, message: 'Requested quantity exceeds the ship\'s fuel limit!' }
+
+    if (credits > pilotCredits)
+        throw { code: 406, message: 'You do not have the requested amount of credits for refilling fuel' }
+
+    return pilotCredits - credits
+}
+module.exports.getDebitCredits = getDebitCredits
 
 module.exports.checkSupportedWeight = async function(ship, resourcesId) {
     try {

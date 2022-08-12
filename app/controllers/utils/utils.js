@@ -22,3 +22,4 @@ function sum(number) {
     else
         return number % 10 + 1
 }
+module.exports.sum = sum

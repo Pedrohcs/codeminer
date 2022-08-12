@@ -39,6 +39,7 @@ function validateTravel(newTravel) {
     if (!newTravel.contract)
         throw { code: 400, message: 'It is mandatory to inform the travel contract'}
 }
+module.exports.validateTravel = validateTravel
 
 async function formatTravel(newTravel) {
     let pilot = await pilotRepository.getByCertification(newTravel.pilot)

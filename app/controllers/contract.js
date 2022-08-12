@@ -45,6 +45,7 @@ function validateContract(newContract) {
     if (!newContract.value)
         throw { code: 400, message: 'It is mandatory to inform the contract\'s value'}
 }
+module.exports.validateContract = validateContract
 
 module.exports.listOpenContracts = async function() {
     try {

@@ -17,3 +17,4 @@ function validateResource(newResource) {
     if (!newResource.weight)
         throw { code: 400, message: 'It is mandatory to inform the payload\'s weight'}
 }
+module.exports.validateResource = validateResource

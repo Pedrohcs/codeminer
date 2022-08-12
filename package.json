@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node ./server.js",
-    "nodemon": "nodemon ./server.js"
+    "nodemon": "nodemon ./server.js",
+    "test": "mocha ./test/controllers",
+    "swagger-autogen": "node swagger.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
